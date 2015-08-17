@@ -1,1005 +1,912 @@
-<!-- <xml version="1.0" encoding="utf-8"> -->
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-  <meta name="generator" content=
-  "HTML Tidy for Cygwin (vers 1st September 2004), see www.w3.org" />
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="viewport" content="width=device-width, initial-scale=1" />
+<title>Emacs Lisp Regression Testing (ERT) Reference Card</title>
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Fabrice Niessen" />
+<meta  name="description" content="ERT reference card"
+ />
+<meta  name="keywords" content="emacs, ert, emacs lisp, regression, testing, test, tests, org, org-mode" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
 
-  <title>Emacs Lisp Regression Testing (ERT) Reference Card</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta name="generator" content="Org-mode" />
-  <meta name="author" content="Fabrice Niessen" />
-  <meta name="description" content="ERT reference card" />
-  <meta name="keywords" content=
-  "emacs, ert, emacs lisp, regression, testing, test, tests" />
-  <link rel="stylesheet" type="text/css" href=
-  "http://svn/mc/missioncriticalit/org-style/trunk/styles/bigblow/css/htmlize.css" />
-  <link rel="stylesheet" type="text/css" href=
-  "http://svn/mc/missioncriticalit/org-style/trunk/styles/bigblow/css/bigblow.css" />
-  <link rel="stylesheet" type="text/css" href=
-  "http://svn/mc/missioncriticalit/org-style/trunk/styles/bigblow/css/hideshow.css" />
-
-<script type="text/javascript" src=
-"http://svn/mc/missioncriticalit/org-style/trunk/styles/bigblow/js/jquery-1.11.0.min.js">
-</script>
-<script type="text/javascript" src=
-"http://svn/mc/missioncriticalit/org-style/trunk/styles/bigblow/js/jquery-ui-1.10.2.min.js">
-</script>
-<script type="text/javascript" src=
-"http://svn/mc/missioncriticalit/org-style/trunk/styles/bigblow/js/jquery.localscroll-min.js">
-</script>
-<script type="text/javascript" src=
-"http://svn/mc/missioncriticalit/org-style/trunk/styles/bigblow/js/jquery.scrollTo-1.4.3.1-min.js">
-</script>
-<script type="text/javascript" src=
-"http://svn/mc/missioncriticalit/org-style/trunk/styles/bigblow/js/jquery.zclip.min.js">
-</script>
-<script type="text/javascript" src=
-"http://svn/mc/missioncriticalit/org-style/trunk/styles/bigblow/js/bigblow.js">
-</script>
-<script type="text/javascript" src=
-"http://svn/mc/missioncriticalit/org-style/trunk/styles/bigblow/js/hideshow.js">
-</script>
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="http://svn/mc/missioncriticalit/org-style/trunk/styles/bigblow/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="http://svn/mc/missioncriticalit/org-style/trunk/styles/bigblow/css/bigblow.css"/>
+<link rel="stylesheet" type="text/css" href="http://svn/mc/missioncriticalit/org-style/trunk/styles/bigblow/css/hideshow.css"/>
+<script type="text/javascript" src="http://svn/mc/missioncriticalit/org-style/trunk/styles/bigblow/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="http://svn/mc/missioncriticalit/org-style/trunk/styles/bigblow/js/jquery-ui-1.10.2.min.js"></script>
+<script type="text/javascript" src="http://svn/mc/missioncriticalit/org-style/trunk/styles/bigblow/js/jquery.localscroll-min.js"></script>
+<script type="text/javascript" src="http://svn/mc/missioncriticalit/org-style/trunk/styles/bigblow/js/jquery.scrollTo-1.4.3.1-min.js"></script>
+<script type="text/javascript" src="http://svn/mc/missioncriticalit/org-style/trunk/styles/bigblow/js/jquery.zclip.min.js"></script>
+<script type="text/javascript" src="http://svn/mc/missioncriticalit/org-style/trunk/styles/bigblow/js/bigblow.js"></script>
+<script type="text/javascript" src="http://svn/mc/missioncriticalit/org-style/trunk/styles/bigblow/js/hideshow.js"></script>
 </head>
-
 <body>
-  <div id="content">
-    <h1 class="title">Emacs Lisp Regression Testing (ERT) Reference Card</h1>
+<div id="content">
+<h1 class="title">Emacs Lisp Regression Testing (ERT) Reference Card</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgheadline1">1. Documentation</a></li>
+<li><a href="#orgheadline12">2. How to run tests</a>
+<ul>
+<li><a href="#orgheadline4">2.1. Emacs tests</a>
+<ul>
+<li><a href="#orgheadline2">2.1.1. Running tests interactively</a></li>
+<li><a href="#orgheadline3">2.1.2. Running tests in batch mode</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline7">2.2. Org tests</a>
+<ul>
+<li><a href="#orgheadline5">2.2.1. Running tests interactively</a></li>
+<li><a href="#orgheadline6">2.2.2. Running tests in batch mode</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline11">2.3. Key bindings</a>
+<ul>
+<li><a href="#orgheadline8">2.3.1. Running</a></li>
+<li><a href="#orgheadline9">2.3.2. Navigation</a></li>
+<li><a href="#orgheadline10">2.3.3. Profiling</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgheadline13">3. How to debug tests</a></li>
+<li><a href="#orgheadline21">4. How to write tests</a>
+<ul>
+<li><a href="#orgheadline14">4.1. Macros</a></li>
+<li><a href="#orgheadline15">4.2. Create a new test case</a></li>
+<li><a href="#orgheadline20">4.3. Useful tips and tricks</a>
+<ul>
+<li><a href="#orgheadline16">4.3.1. Position of point</a></li>
+<li><a href="#orgheadline17">4.3.2. RESULTS vs results</a></li>
+<li><a href="#orgheadline18">4.3.3. Duplication of input</a></li>
+<li><a href="#orgheadline19">4.3.4. Temporary buffer</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgheadline35">5. Extending Org tests</a>
+<ul>
+<li><a href="#orgheadline26">5.1. Important functions</a>
+<ul>
+<li><a href="#orgheadline22">5.1.1. Ob.el</a></li>
+<li><a href="#orgheadline23">5.1.2. Org-test.el</a></li>
+<li><a href="#orgheadline24">5.1.3. Subr.el</a></li>
+<li><a href="#orgheadline25">5.1.4. C source code</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline27">5.2. Insert a new heading</a></li>
+<li><a href="#orgheadline28">5.3. Check for compile error</a></li>
+<li><a href="#orgheadline29">5.4. Export</a></li>
+<li><a href="#orgheadline30">5.5. Insert text for testing visual line mode</a></li>
+<li><a href="#orgheadline31">5.6. Proper error message</a></li>
+<li><a href="#orgheadline32">5.7. Speed commands</a></li>
+<li><a href="#orgheadline33">5.8. Results block</a></li>
+<li><a href="#orgheadline34">5.9. Test Org list</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline39">6. Contributing</a>
+<ul>
+<li><a href="#orgheadline36">6.1. Issues</a></li>
+<li><a href="#orgheadline37">6.2. Patches</a></li>
+<li><a href="#orgheadline38">6.3. Donations</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline40">7. License</a></li>
+</ul>
+</div>
+</div>
+<a href="http://opensource.org/licenses/GPL-3.0">
+  <img src="http://img.shields.io/:license-gpl-blue.svg" alt=":license-gpl-blue.svg" />
+</a>
 
-    <div id="table-of-contents">
-      <h2>Table of Contents</h2>
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=VCVAS6KPDQ4JC&lc=BE&item_number=refcard%2dert&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted">
+  <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" alt="btn_donate_LG.gif" />
+</a>
 
-      <div id="text-table-of-contents">
-        <ul>
-          <li><a href="#sec-1">1. Documentation</a></li>
+<div id="outline-container-orgheadline1" class="outline-2">
+<h2 id="orgheadline1"><span class="section-number-2">1</span> Documentation</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+<a href="http://www.gnu.org/software/emacs/manual/ert.html">ERT manual</a>
+</p>
+</div>
+</div>
 
-          <li>
-            <a href="#sec-2">2. How to run tests</a>
 
-            <ul>
-              <li>
-                <a href="#sec-2-1">2.1. Emacs tests</a>
+<div id="outline-container-orgheadline12" class="outline-2">
+<h2 id="orgheadline12"><span class="section-number-2">2</span> How to run tests</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-orgheadline4" class="outline-3">
+<h3 id="orgheadline4"><span class="section-number-3">2.1</span> Emacs tests</h3>
+<div class="outline-text-3" id="text-2-1">
+</div><div id="outline-container-orgheadline2" class="outline-4">
+<h4 id="orgheadline2"><span class="section-number-4">2.1.1</span> Running tests interactively</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+<code>ert-run-tests-interactively</code> runs tests and offers an interactive interface for
+inspecting results and debugging.
+</p>
 
-                <ul>
-                  <li><a href="#sec-2-1-1">2.1.1. Running tests
-                  interactively</a></li>
+<dl class="org-dl">
+<dt><code>M-x ert RET t RET</code></dt><dd>Runs <b>all</b> the <b>tests</b> currently defined and display the results in a buffer.</dd>
+</dl>
+</div>
+</div>
 
-                  <li><a href="#sec-2-1-2">2.1.2. Running tests in batch
-                  mode</a></li>
-                </ul>
-              </li>
+<div id="outline-container-orgheadline3" class="outline-4">
+<h4 id="orgheadline3"><span class="section-number-4">2.1.2</span> Running tests in batch mode</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<p>
+There is also <code>ert-run-tests-batch-and-exit</code> for non-interactive use.
+</p>
 
-              <li>
-                <a href="#sec-2-2">2.2. Org tests</a>
+<p>
+To run the tests in batch mode, type:
+</p>
 
-                <ul>
-                  <li><a href="#sec-2-2-1">2.2.1. Running tests
-                  interactively</a></li>
+<div class="org-src-container">
 
-                  <li><a href="#sec-2-2-2">2.2.2. Running tests in batch
-                  mode</a></li>
-                </ul>
-              </li>
-
-              <li>
-                <a href="#sec-2-3">2.3. Key bindings</a>
-
-                <ul>
-                  <li><a href="#sec-2-3-1">2.3.1. Running</a></li>
-
-                  <li><a href="#sec-2-3-2">2.3.2. Navigation</a></li>
-
-                  <li><a href="#sec-2-3-3">2.3.3. Profiling</a></li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-
-          <li><a href="#sec-3">3. How to debug tests</a></li>
-
-          <li>
-            <a href="#sec-4">4. How to write tests</a>
-
-            <ul>
-              <li><a href="#sec-4-1">4.1. Macros</a></li>
-
-              <li><a href="#sec-4-2">4.2. Create a new test case</a></li>
-
-              <li>
-                <a href="#sec-4-3">4.3. Useful tips and tricks</a>
-
-                <ul>
-                  <li><a href="#sec-4-3-1">4.3.1. Position of point</a></li>
-
-                  <li><a href="#sec-4-3-2">4.3.2. RESULTS vs results</a></li>
-
-                  <li><a href="#sec-4-3-3">4.3.3. Duplication of input</a></li>
-
-                  <li><a href="#sec-4-3-4">4.3.4. Temporary buffer</a></li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-
-          <li>
-            <a href="#sec-5">5. Extending Org tests</a>
-
-            <ul>
-              <li>
-                <a href="#sec-5-1">5.1. Important functions</a>
-
-                <ul>
-                  <li><a href="#sec-5-1-1">5.1.1. Ob.el</a></li>
-
-                  <li><a href="#sec-5-1-2">5.1.2. Org-test.el</a></li>
-
-                  <li><a href="#sec-5-1-3">5.1.3. Subr.el</a></li>
-
-                  <li><a href="#sec-5-1-4">5.1.4. C source code</a></li>
-                </ul>
-              </li>
-
-              <li><a href="#sec-5-2">5.2. Insert a new heading</a></li>
-
-              <li><a href="#sec-5-3">5.3. Check for compile error</a></li>
-
-              <li><a href="#sec-5-4">5.4. Export</a></li>
-
-              <li><a href="#sec-5-5">5.5. Insert text for testing visual line
-              mode</a></li>
-
-              <li><a href="#sec-5-6">5.6. Proper error message</a></li>
-
-              <li><a href="#sec-5-7">5.7. Speed commands</a></li>
-
-              <li><a href="#sec-5-8">5.8. Results block</a></li>
-
-              <li><a href="#sec-5-9">5.9. Test Org list</a></li>
-            </ul>
-          </li>
-
-          <li>
-            <a href="#sec-6">6. Contributing</a>
-
-            <ul>
-              <li><a href="#sec-6-1">6.1. Issues</a></li>
-
-              <li><a href="#sec-6-2">6.2. Patches</a></li>
-
-              <li><a href="#sec-6-3">6.3. Donations</a></li>
-            </ul>
-          </li>
-
-          <li><a href="#sec-7">7. License</a></li>
-        </ul>
-      </div>
-    </div>
-
-    <p><a href="http://opensource.org/licenses/GPL-3.0"><object type=
-    "image/svg+xml" data="http://img.shields.io/:license-gpl-blue.svg">
-      Sorry, your browser does not support SVG.
-    </object></a> <a href=
-    "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=VCVAS6KPDQ4JC&amp;lc=BE&amp;item_number=emacs-leuven-theme&amp;currency_code=EUR&amp;bn=PP-DonationsBF:btn_donate_LG.gif:NonHosted">
-    <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" alt=
-    "btn_donate_LG.gif" /></a></p>
-
-    <div id="outline-container-sec-1" class="outline-2">
-      <h2 id="sec-1"><span class="section-number-2">1</span> Documentation</h2>
-
-      <div class="outline-text-2" id="text-1">
-        <p><a href="http://www.gnu.org/software/emacs/manual/ert.html">ERT
-        manual</a></p>
-      </div>
-    </div>
-
-    <div id="outline-container-sec-2" class="outline-2">
-      <h2 id="sec-2"><span class="section-number-2">2</span> How to run
-      tests</h2>
-
-      <div class="outline-text-2" id="text-2"></div>
-
-      <div id="outline-container-sec-2-1" class="outline-3">
-        <h3 id="sec-2-1"><span class="section-number-3">2.1</span> Emacs
-        tests</h3>
-
-        <div class="outline-text-3" id="text-2-1"></div>
-
-        <div id="outline-container-sec-2-1-1" class="outline-4">
-          <h4 id="sec-2-1-1"><span class="section-number-4">2.1.1</span>
-          Running tests interactively</h4>
-
-          <div class="outline-text-4" id="text-2-1-1">
-            <dl class="org-dl">
-              <dt><code>M-x ert RET t RET</code></dt>
-
-              <dd>Runs <b>all</b> the <b>tests</b> currently defined and
-              display the results in a buffer.</dd>
-            </dl>
-          </div>
-        </div>
-
-        <div id="outline-container-sec-2-1-2" class="outline-4">
-          <h4 id="sec-2-1-2"><span class="section-number-4">2.1.2</span>
-          Running tests in batch mode</h4>
-
-          <div class="outline-text-4" id="text-2-1-2">
-            <p>To run the tests in batch mode, type (for example, for
-            YASnippets):</p>
-
-            <div class="org-src-container">
-              <pre class="src src-shell">
-emacs -Q -L . -l yasnippet-tests.el -nw --batch -e yas-batch-run-tests
+<pre class="src src-shell"><span class="org-comment-delimiter"># </span><span class="org-comment">Run all defined tests (no selection).</span>
+emacs --batch -l my-tests.el -f ert-run-tests-batch-and-exit
+emacs -Q --batch -L . -l yasnippet-tests.el -nw -e yas-batch-run-tests
 </pre>
-            </div>
-          </div>
-        </div>
-      </div>
+</div>
+</div>
+</div>
+</div>
 
-      <div id="outline-container-sec-2-2" class="outline-3">
-        <h3 id="sec-2-2"><span class="section-number-3">2.2</span> Org
-        tests</h3>
+<div id="outline-container-orgheadline7" class="outline-3">
+<h3 id="orgheadline7"><span class="section-number-3">2.2</span> Org tests</h3>
+<div class="outline-text-3" id="text-2-2">
+</div><div id="outline-container-orgheadline5" class="outline-4">
+<h4 id="orgheadline5"><span class="section-number-4">2.2.1</span> Running tests interactively</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<div class="org-src-container">
 
-        <div class="outline-text-3" id="text-2-2"></div>
-
-        <div id="outline-container-sec-2-2-1" class="outline-4">
-          <h4 id="sec-2-2-1"><span class="section-number-4">2.2.1</span>
-          Running tests interactively</h4>
-
-          <div class="outline-text-4" id="text-2-2-1">
-            <div class="org-src-container">
-              <pre class="src src-emacs-lisp">
-(<span class="org-keyword">require</span> '<span class=
-"org-constant">org-test</span>)
+<pre class="src src-emacs-lisp">(<span class="org-keyword">require</span> '<span class="org-constant">org-test</span>)
 </pre>
-            </div>
+</div>
 
-            <dl class="org-dl">
-              <dt><code>M-x org-test-run-all-tests</code></dt>
 
-              <dd>
-                <p>Runs all the tests currently defined matching the string
-                <code>(org|ob)</code>.</p>
+<dl class="org-dl">
+<dt><code>M-x org-test-run-all-tests</code></dt><dd><p>
+     Runs all the tests currently defined matching the string <code>\(org\|ob\)</code>.
+</p>
 
-                <div class="note">
-                  <p>Unlike <code>org-test-run-all-tests</code>,
-                  <code>ert</code> does not “touch” the examples, what avoids
-                  confirmation on the following runs.</p>
-                </div>
-              </dd>
-            </dl>
+<div class="note">
+<p>
+Unlike <code>org-test-run-all-tests</code>, <code>ert</code> does not &ldquo;touch&rdquo; the examples, what
+avoids confirmation on the following runs.
+</p>
 
-            <p>To run <b>each test individually</b>, press <code>C-x C-e</code>
-            at the end of the <code>should</code> sexp (“S-expression”).</p>
-          </div>
-        </div>
+</div></dd>
+</dl>
 
-        <div id="outline-container-sec-2-2-2" class="outline-4">
-          <h4 id="sec-2-2-2"><span class="section-number-4">2.2.2</span>
-          Running tests in batch mode</h4>
+<p>
+To run <b>each test individually</b>, press <code>C-x C-e</code> at the end of the <code>should</code> sexp
+(&ldquo;S-expression&rdquo;).
+</p>
+</div>
+</div>
 
-          <div class="outline-text-4" id="text-2-2-2">
-            <p>To run the test suite (<b>all existing test cases</b>), type
-            <code>make test</code> from the <code>org-mode/</code>
-            directory.</p>
-          </div>
-        </div>
-      </div>
+<div id="outline-container-orgheadline6" class="outline-4">
+<h4 id="orgheadline6"><span class="section-number-4">2.2.2</span> Running tests in batch mode</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<p>
+To run the test suite (<b>all existing test cases</b>), type <code>make test</code> from the
+<code>org-mode/</code> directory.
+</p>
 
-      <div id="outline-container-sec-2-3" class="outline-3">
-        <h3 id="sec-2-3"><span class="section-number-3">2.3</span> Key
-        bindings</h3>
+<div class="org-src-container">
 
-        <div class="outline-text-3" id="text-2-3">
-          <p>Key bindings in the ERT results buffer.</p>
-        </div>
-
-        <div id="outline-container-sec-2-3-1" class="outline-4">
-          <h4 id="sec-2-3-1"><span class="section-number-4">2.3.1</span>
-          Running</h4>
-
-          <div class="outline-text-4" id="text-2-3-1">
-            <dl class="org-dl">
-              <dt><code>R</code></dt>
-
-              <dd><b>Re-runs all tests</b>, using the same selector.</dd>
-
-              <dt><code>r</code></dt>
-
-              <dd><b>Re-runs the test</b> near point.</dd>
-
-              <dt><code>h</code></dt>
-
-              <dd>Displays the <b>documentation</b> of the test at point.</dd>
-
-              <dt><code>.</code></dt>
-
-              <dd>Jumps to the <b>definition</b> (source code) of the
-              test.</dd>
-            </dl>
-          </div>
-        </div>
-
-        <div id="outline-container-sec-2-3-2" class="outline-4">
-          <h4 id="sec-2-3-2"><span class="section-number-4">2.3.2</span>
-          Navigation</h4>
-
-          <div class="outline-text-4" id="text-2-3-2">
-            <dl class="org-dl">
-              <dt><code>j</code></dt>
-
-              <dd><b>Jumps</b> back and forth <b>between</b> the test run
-              <b>summary and</b> individual test <b>results</b>.</dd>
-
-              <dt><code>n</code></dt>
-
-              <dd>Moves point to the <b>next</b> test <b>result</b>.</dd>
-
-              <dt><code>p</code></dt>
-
-              <dd>Moves point to the <b>previous</b> test <b>result</b>.</dd>
-
-              <dt><code>q</code></dt>
-
-              <dd><b>Quits</b> window and bury its buffer.</dd>
-            </dl>
-          </div>
-        </div>
-
-        <div id="outline-container-sec-2-3-3" class="outline-4">
-          <h4 id="sec-2-3-3"><span class="section-number-4">2.3.3</span>
-          Profiling</h4>
-
-          <div class="outline-text-4" id="text-2-3-3">
-            <dl class="org-dl">
-              <dt><code>T</code></dt>
-
-              <dd>Display test <b>timings</b> for the last run.</dd>
-            </dl>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="outline-container-sec-3" class="outline-2">
-      <h2 id="sec-3"><span class="section-number-2">3</span> How to debug
-      tests</h2>
-
-      <div class="outline-text-2" id="text-3">
-        <p>Interactive debugging in the ERT buffer.</p>
-
-        <dl class="org-dl">
-          <dt><code>d</code></dt>
-
-          <dd>Re-runs the test with the <b>debugger</b> enabled.</dd>
-
-          <dt><code>b</code></dt>
-
-          <dd>On a failed test, shows the <b>backtrace</b> of the failure. More
-          convenient than <code>d</code> as it strips out the irrelevant top
-          few frames shown in the debugger backtrace.</dd>
-
-          <dt><code>l</code></dt>
-
-          <dd>If the test contains a series of <code>should</code> forms, shows
-          the <b>list</b> of all <code>should</code> forms executed during the
-          test before it failed.</dd>
-
-          <dt><code>m</code></dt>
-
-          <dd>Shows <b>messages</b> which were printed for the test before it
-          failed.</dd>
-
-          <dt><code>L</code></dt>
-
-          <dd>On a failed test, increases the “printer” limits
-          (<code>print-length</code> and <code>print-level</code>) to show more
-          of the expression.</dd>
-
-          <dt><code>D</code></dt>
-
-          <dd>Lets ERT <b>forget</b> about the obsolete test at point (because
-          edited and rearranged).</dd>
-        </dl>
-      </div>
-    </div>
-
-    <div id="outline-container-sec-4" class="outline-2">
-      <h2 id="sec-4"><span class="section-number-2">4</span> How to write
-      tests</h2>
-
-      <div class="outline-text-2" id="text-4"></div>
-
-      <div id="outline-container-sec-4-1" class="outline-3">
-        <h3 id="sec-4-1"><span class="section-number-3">4.1</span> Macros</h3>
-
-        <div class="outline-text-3" id="text-4-1">
-          <p>Operators available:</p>
-
-          <dl class="org-dl">
-            <dt><code>should</code></dt>
-
-            <dd>Check that the assertion is true.</dd>
-
-            <dt><code>should-not</code></dt>
-
-            <dd>Check that the predicate returns <code>nil</code>.</dd>
-
-            <dt><code>should-error</code></dt>
-
-            <dd>Check that the form called within it signals an error.</dd>
-
-            <dt><code>skip-unless</code></dt>
-
-            <dd>Skip the test immediately without processing further. This is
-            useful for checking the test environment (like availability of
-            features, external binaries, etc).</dd>
-          </dl>
-
-          <p>I suggest to always put the <code>should</code> (or
-          <code>should-not</code>, <code>should-error</code>) outside each
-          test: it makes it easier to inspect results from partial
-          evaluations.</p>
-        </div>
-      </div>
-
-      <div id="outline-container-sec-4-2" class="outline-3">
-        <h3 id="sec-4-2"><span class="section-number-3">4.2</span> Create a new
-        test case</h3>
-
-        <div class="outline-text-3" id="text-4-2">
-          <p>To write your first test:</p>
-
-          <ul class="org-ul">
-            <li>Find a similar test in
-            <code>testing/lisp/&lt;file&gt;.el</code> (maybe in
-            <code>test-ob-exp.el</code>)</li>
-
-            <li>Load the file <code>testing/org-test.el</code> which has many
-            helper functions</li>
-
-            <li>
-              <p>Write and evaluate your <code>ert-deftest</code>:</p>
-
-              <div class="org-src-container">
-                <pre class="src src-emacs-lisp">
-(ert-deftest test-org/end-of-line ()
-  <span class="org-string">"Test `</span><span class=
-"org-constant"><span class="org-string">org-end-of-line</span></span><span class="org-string">' specifications."</span>
-  <span class="org-comment-delimiter">;; </span><span class=
-"org-comment">At an headline without special movement.</span>
-  (should
-   (org-test-with-temp-text <span class=
-"org-string">"* Headline2 :tag:\n"</span>
-     (<span class="org-keyword">let</span> ((org-special-ctrl-a/e nil))
-       (and (<span class="org-keyword">progn</span> (message <span class=
-"org-string">"FOO"</span>)
-                   (org-end-of-line)
-                   (message (format <span class=
-"org-string">"%d"</span> (point)))
-                   (eolp))
-            (<span class="org-keyword">progn</span> (org-end-of-line)
-                   (eolp)))))))
+<pre class="src src-shell"><span class="org-comment-delimiter"># </span><span class="org-comment">Using emacs in batch mode (with no user and site configuration).</span>
+emacs -Q --batch <span class="org-sh-escaped-newline">\</span>
+      --eval <span class="org-string">'(setq vc-handled-backends nil org-startup-folded nil)'</span> <span class="org-sh-escaped-newline">\</span>
+      --eval <span class="org-string">'(add-to-list '"'"'load-path (concat default-directory "lisp"))'</span> <span class="org-sh-escaped-newline">\</span>
+      --eval <span class="org-string">'(add-to-list '"'"'load-path (concat default-directory "testing"))'</span> <span class="org-sh-escaped-newline">\</span>
+      -l org-batch-test-init <span class="org-sh-escaped-newline">\</span>
+      --eval <span class="org-string">'(setq \</span>
+<span class="org-string">                    org-batch-test t \</span>
+<span class="org-string">                    org-babel-load-languages \</span>
+<span class="org-string">                    org-test-select-re "\\(org\\|ob\\)" \</span>
+<span class="org-string">              )'</span> <span class="org-sh-escaped-newline">\</span>
+      -l org-loaddefs.el <span class="org-sh-escaped-newline">\</span>
+      -l cl -l testing/org-test.el <span class="org-sh-escaped-newline">\</span>
+      -l ert -l org -l ox <span class="org-sh-escaped-newline">\</span>
+      --eval <span class="org-string">'(org-test-run-batch-tests org-test-select-re)'</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Run all defined tests (no selection).</span>
+emacs -Q --batch <span class="org-sh-escaped-newline">\</span>
+      -L lisp/ -L testing/ <span class="org-sh-escaped-newline">\</span>
+      -l ~/src/emacs-leuven/org-test-fni.el <span class="org-sh-escaped-newline">\</span>
+      --eval <span class="org-string">'(setq org-confirm-babel-evaluate nil)'</span> <span class="org-sh-escaped-newline">\</span>
+      -f ert-run-tests-batch-and-exit
 </pre>
-              </div>
-            </li>
+</div>
+</div>
+</div>
+</div>
 
-            <li>
-              <p>Call <code>ert</code> to run the test</p>
+<div id="outline-container-orgheadline11" class="outline-3">
+<h3 id="orgheadline11"><span class="section-number-3">2.3</span> Key bindings</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+Key bindings in the ERT results buffer.
+</p>
+</div>
 
-              <div class="org-src-container">
-                <pre class="src src-emacs-lisp">
-(ert 'test-org/end-of-line)
+<div id="outline-container-orgheadline8" class="outline-4">
+<h4 id="orgheadline8"><span class="section-number-4">2.3.1</span> Running</h4>
+<div class="outline-text-4" id="text-2-3-1">
+<dl class="org-dl">
+<dt><code>R</code></dt><dd><b>Re-runs all tests</b>, using the same selector.</dd>
+
+<dt><code>r</code></dt><dd><b>Re-runs the test</b> near point.</dd>
+
+<dt><code>h</code></dt><dd>Displays the <b>documentation</b> of the test at point.</dd>
+
+<dt><code>.</code></dt><dd>Jumps to the <b>definition</b> (source code) of the test.</dd>
+</dl>
+</div>
+</div>
+
+<div id="outline-container-orgheadline9" class="outline-4">
+<h4 id="orgheadline9"><span class="section-number-4">2.3.2</span> Navigation</h4>
+<div class="outline-text-4" id="text-2-3-2">
+<dl class="org-dl">
+<dt><code>j</code></dt><dd><b>Jumps</b> back and forth <b>between</b> the test run <b>summary and</b> individual test
+<b>results</b>.</dd>
+
+<dt><code>n</code></dt><dd>Moves point to the <b>next</b> test <b>result</b>.</dd>
+
+<dt><code>p</code></dt><dd>Moves point to the <b>previous</b> test <b>result</b>.</dd>
+
+<dt><code>q</code></dt><dd><b>Quits</b> window and bury its buffer.</dd>
+</dl>
+</div>
+</div>
+
+<div id="outline-container-orgheadline10" class="outline-4">
+<h4 id="orgheadline10"><span class="section-number-4">2.3.3</span> Profiling</h4>
+<div class="outline-text-4" id="text-2-3-3">
+<dl class="org-dl">
+<dt><code>T</code></dt><dd>Display test <b>timings</b> for the last run.</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline13" class="outline-2">
+<h2 id="orgheadline13"><span class="section-number-2">3</span> How to debug tests</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Interactive debugging in the ERT buffer.
+</p>
+
+<dl class="org-dl">
+<dt><code>d</code></dt><dd>Re-runs the test with the <b>debugger</b> enabled.</dd>
+
+<dt><code>b</code></dt><dd>On a failed test, shows the <b>backtrace</b> of the failure. More convenient
+than <code>d</code> as it strips out the irrelevant top few frames shown in the
+debugger backtrace.</dd>
+
+<dt><code>l</code></dt><dd>If the test contains a series of <code>should</code> forms, shows the <b>list</b> of all
+<code>should</code> forms executed during the test before it failed.</dd>
+
+<dt><code>m</code></dt><dd>Shows <b>messages</b> which were printed for the test before it failed.</dd>
+
+<dt><code>L</code></dt><dd>On a failed test, increases the &ldquo;printer&rdquo; limits (<code>print-length</code> and
+<code>print-level</code>) to show more of the expression.</dd>
+
+<dt><code>D</code></dt><dd>Lets ERT <b>forget</b> about the obsolete test at point (because edited and
+rearranged).</dd>
+</dl>
+</div>
+</div>
+
+<div id="outline-container-orgheadline21" class="outline-2">
+<h2 id="orgheadline21"><span class="section-number-2">4</span> How to write tests</h2>
+<div class="outline-text-2" id="text-4">
+</div><div id="outline-container-orgheadline14" class="outline-3">
+<h3 id="orgheadline14"><span class="section-number-3">4.1</span> Macros</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+Operators available:
+</p>
+
+<dl class="org-dl">
+<dt><code>should</code></dt><dd>Check that the assertion is true.</dd>
+
+<dt><code>should-not</code></dt><dd>Check that the predicate returns <code>nil</code>.</dd>
+
+<dt><code>should-error</code></dt><dd>Check that the form called within it signals an error.</dd>
+
+<dt><code>skip-unless</code></dt><dd>Skip the test immediately without processing further.  This is useful for
+checking the test environment (like availability of features, external
+binaries, etc).</dd>
+</dl>
+
+<p>
+I suggest to always put the <code>should</code> (or <code>should-not</code>, <code>should-error</code>) outside each
+test: it makes it easier to inspect results from partial evaluations.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline15" class="outline-3">
+<h3 id="orgheadline15"><span class="section-number-3">4.2</span> Create a new test case</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+To write your first test:
+</p>
+
+<ul class="org-ul">
+<li>Find a similar test in <code>testing/lisp/&lt;file&gt;.el</code> (maybe in <code>test-ob-exp.el</code>)</li>
+
+<li>Load the file <code>testing/org-test.el</code> which has many helper functions</li>
+
+<li><p>
+Write and evaluate your <code>ert-deftest</code>:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(<span class="org-keyword">ert-deftest</span> test-org/end-of-line ()
+  <span class="org-doc">"Test `</span><span class="org-constant"><span class="org-doc">org-end-of-line</span></span><span class="org-doc">' specifications."</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">At an headline without special movement.</span>
+  (should
+   (org-test-with-temp-text <span class="org-string">"* Headline2 :tag:\n"</span>
+     (<span class="org-keyword">let</span> ((org-special-ctrl-a/e nil))
+       (<span class="org-keyword">and</span> (<span class="org-keyword">progn</span> (message <span class="org-string">"FOO"</span>)
+                   (org-end-of-line)
+                   (message (format <span class="org-string">"%d"</span> (point)))
+                   (eolp))
+            (<span class="org-keyword">progn</span> (org-end-of-line)
+                   (eolp)))))))
 </pre>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
+</div></li>
 
-      <div id="outline-container-sec-4-3" class="outline-3">
-        <h3 id="sec-4-3"><span class="section-number-3">4.3</span> Useful tips
-        and tricks</h3>
+<li><p>
+Call <code>ert</code> to run the test
+</p>
 
-        <div class="outline-text-3" id="text-4-3"></div>
+<div class="org-src-container">
 
-        <div id="outline-container-sec-4-3-1" class="outline-4">
-          <h4 id="sec-4-3-1"><span class="section-number-4">4.3.1</span>
-          Position of point</h4>
-
-          <div class="outline-text-4" id="text-4-3-1">
-            <p>When <code>org-babel-execute-src-block</code> is called, the
-            <b>point must be inside of the code block</b>. Hence, search
-            forward in the text to place the point at the beginning of the code
-            block before executing!</p>
-          </div>
-        </div>
-
-        <div id="outline-container-sec-4-3-2" class="outline-4">
-          <h4 id="sec-4-3-2"><span class="section-number-4">4.3.2</span>
-          RESULTS vs results</h4>
-
-          <div class="outline-text-4" id="text-4-3-2">
-            <p>For the string equality to return <code>true</code>, you have to
-            uppercase <code>RESULTS</code>. In the future, more flexible tests
-            (such as regular expression searches) rather than strict equality
-            should be preferable.</p>
-
-            <p>Or you could let-bind <code>org-babel-results-keyword</code> to
-            <code>"results"</code> around any future tests.</p>
-          </div>
-        </div>
-
-        <div id="outline-container-sec-4-3-3" class="outline-4">
-          <h4 id="sec-4-3-3"><span class="section-number-4">4.3.3</span>
-          Duplication of input</h4>
-
-          <div class="outline-text-4" id="text-4-3-3">
-            <p class="verse">&gt; I’m thinking at another thing that could help
-            reduce the size of the<br />
-            &gt; tests. Currently, we copy once the code block, and once the
-            code block + its<br />
-            &gt; results.<br />
-            &gt;<br />
-            &gt; Maybe we could have a function to locate the results, and only
-            check on the<br />
-            &gt; results.<br />
-            &gt;<br />
-            &gt; So, something along those lines:<br />
-            &gt;<br />
-            &gt; –8&lt;—————cut here—————start-————&gt;8—<br />
-            &gt; (should<br />
-            &gt; (equal (results-part (org-babel-execute-src-block “code block
-            only”))<br />
-            &gt; “results only”))<br />
-            &gt; –8&lt;—————cut here—————end—————&gt;8—<br />
-            &gt;<br />
-            &gt; No duplication of the input…<br />
-            &gt;<br />
-            &gt; Does this make sense?<br />
-            <br />
-            Yes, that would be an improvement, see the other tests in that file
-            for<br />
-            examples of similar functionality.<br /></p>
-          </div>
-        </div>
-
-        <div id="outline-container-sec-4-3-4" class="outline-4">
-          <h4 id="sec-4-3-4"><span class="section-number-4">4.3.4</span>
-          Temporary buffer</h4>
-
-          <div class="outline-text-4" id="text-4-3-4">
-            <p>Use a <b>test buffer</b> (with Org mode enabled) to avoid
-            messing with test example.</p>
-
-            <p>Use the function <code>org-test-with-temp-text</code> to use a
-            <b>temporary Org mode buffer with initial text</b>.</p>
-
-            <div class="org-src-container">
-              <pre class="src src-emacs-lisp">
-(org-test-with-temp-text <span class="org-string">"Initial text"</span>
-  ...)
+<pre class="src src-emacs-lisp">(ert 'test-org/end-of-line)
 </pre>
-            </div>
+</div></li>
+</ul>
+</div>
+</div>
 
-            <p>It is then possible that the test simply compares the whole
-            <code>buffer-string</code> with some expected contents.</p>
+<div id="outline-container-orgheadline20" class="outline-3">
+<h3 id="orgheadline20"><span class="section-number-3">4.3</span> Useful tips and tricks</h3>
+<div class="outline-text-3" id="text-4-3">
+</div><div id="outline-container-orgheadline16" class="outline-4">
+<h4 id="orgheadline16"><span class="section-number-4">4.3.1</span> Position of point</h4>
+<div class="outline-text-4" id="text-4-3-1">
+<p>
+When <code>org-babel-execute-src-block</code> is called, the <b>point must be inside of the code
+block</b>.  Hence, search forward in the text to place the point at the beginning of
+the code block before executing!
+</p>
+</div>
+</div>
 
-            <div class="note">
-              <p><code>(kill-buffer)</code> within <code>(with-temp-buffer
-              ...)</code> does not make sense.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+<div id="outline-container-orgheadline17" class="outline-4">
+<h4 id="orgheadline17"><span class="section-number-4">4.3.2</span> RESULTS vs results</h4>
+<div class="outline-text-4" id="text-4-3-2">
+<p>
+For the string equality to return <code>true</code>, you have to uppercase <code>RESULTS</code>.  In the
+future, more flexible tests (such as regular expression searches) rather than
+strict equality should be preferable.
+</p>
 
-    <div id="outline-container-sec-5" class="outline-2">
-      <h2 id="sec-5"><span class="section-number-2">5</span> Extending Org
-      tests</h2>
+<p>
+Or you could let-bind <code>org-babel-results-keyword</code> to <code>"results"</code> around any future
+tests.
+</p>
+</div>
+</div>
 
-      <div class="outline-text-2" id="text-5">
-        <p>These are several examples which you can use as patterns to add
-        tests to Org.</p>
-      </div>
+<div id="outline-container-orgheadline18" class="outline-4">
+<h4 id="orgheadline18"><span class="section-number-4">4.3.3</span> Duplication of input</h4>
+<div class="outline-text-4" id="text-4-3-3">
+<p class="verse">
+&gt; I&rsquo;m thinking at another thing that could help reduce the size of the<br  />
+&gt; tests. Currently, we copy once the code block, and once the code block + its<br  />
+&gt; results.<br  />
+&gt;<br  />
+&gt; Maybe we could have a function to locate the results, and only check on the<br  />
+&gt; results.<br  />
+&gt;<br  />
+&gt; So, something along those lines:<br  />
+&gt;<br  />
+&gt; &#x2013;8&lt;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;cut here&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;start-&#x2014;&#x2014;&#x2014;&#x2014;&gt;8&#x2014;<br  />
+&gt; (should<br  />
+&gt;  (equal (results-part (org-babel-execute-src-block &ldquo;code block only&rdquo;))<br  />
+&gt;         &ldquo;results only&rdquo;))<br  />
+&gt; &#x2013;8&lt;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;cut here&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;end&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&gt;8&#x2014;<br  />
+&gt;<br  />
+&gt; No duplication of the input&#x2026;<br  />
+&gt;<br  />
+&gt; Does this make sense?<br  />
+<br  />
+Yes, that would be an improvement, see the other tests in that file for<br  />
+examples of similar functionality.<br  />
+</p>
+</div>
+</div>
 
-      <div id="outline-container-sec-5-1" class="outline-3">
-        <h3 id="sec-5-1"><span class="section-number-3">5.1</span> Important
-        functions</h3>
+<div id="outline-container-orgheadline19" class="outline-4">
+<h4 id="orgheadline19"><span class="section-number-4">4.3.4</span> Temporary buffer</h4>
+<div class="outline-text-4" id="text-4-3-4">
+<p>
+Use a <b>test buffer</b> (with Org mode enabled) to avoid messing with test
+example.
+</p>
 
-        <div class="outline-text-3" id="text-5-1">
-          <p>Functions to look at.</p>
-        </div>
+<p>
+Use the function <code>org-test-with-temp-text</code> to use a <b>temporary Org mode buffer
+with initial text</b>.
+</p>
 
-        <div id="outline-container-sec-5-1-1" class="outline-4">
-          <h4 id="sec-5-1-1"><span class="section-number-4">5.1.1</span>
-          Ob.el</h4>
+<div class="org-src-container">
 
-          <div class="outline-text-4" id="text-5-1-1">
-            <p>org-babel-execute-src-block<br />
-            org-babel-execute:&lt;language&gt;<br />
-            org-babel-expand-body:generic<br />
-            org-babel-get-header<br />
-            org-babel-get-inline-src-block-matches<br />
-            org-babel-get-src-block-info<br />
-            org-babel-next-src-block</p>
-          </div>
-        </div>
-
-        <div id="outline-container-sec-5-1-2" class="outline-4">
-          <h4 id="sec-5-1-2"><span class="section-number-4">5.1.2</span>
-          Org-test.el</h4>
-
-          <div class="outline-text-4" id="text-5-1-2">
-            <p>org-test-at-id<br />
-            org-test-in-example-file<br />
-            org-test-with-temp-text</p>
-          </div>
-        </div>
-
-        <div id="outline-container-sec-5-1-3" class="outline-4">
-          <h4 id="sec-5-1-3"><span class="section-number-4">5.1.3</span>
-          Subr.el</h4>
-
-          <div class="outline-text-4" id="text-5-1-3">
-            <p>dotimes<br />
-            match-string</p>
-          </div>
-        </div>
-
-        <div id="outline-container-sec-5-1-4" class="outline-4">
-          <h4 id="sec-5-1-4"><span class="section-number-4">5.1.4</span> C
-          source code</h4>
-
-          <div class="outline-text-4" id="text-5-1-4">
-            <p>mapcar</p>
-          </div>
-        </div>
-      </div>
-
-      <div id="outline-container-sec-5-2" class="outline-3">
-        <h3 id="sec-5-2"><span class="section-number-3">5.2</span> Insert a new
-        heading</h3>
-
-        <div class="outline-text-3" id="text-5-2">
-          <div class="org-src-container">
-            <pre class="src src-emacs-lisp">
-(ert-deftest test-org/insert-heading ()
-  <span class="org-string">"Test specifications for heading insertion."</span>
-  <span class="org-comment-delimiter">;; </span><span class=
-"org-comment">At the end of a single headline: Create headline below, following</span>
-  <span class="org-comment-delimiter">;; </span><span class=
-"org-comment">`</span><span class="org-constant"><span class=
-"org-comment">org-blank-before-new-entry</span></span><span class=
-"org-comment">' specifications.  When it is `</span><span class=
-"org-constant"><span class="org-comment">auto</span></span><span class=
-"org-comment">',</span>
-  <span class="org-comment-delimiter">;; </span><span class=
-"org-comment">since there's not enough information to deduce what is expected,</span>
-  <span class="org-comment-delimiter">;; </span><span class=
-"org-comment">create it just below.</span>
-  (should
-   (equal <span class="org-string">"* H\n* "</span>
-          (org-test-with-temp-text <span class="org-string">"* H"</span>
-            (end-of-line)
-            (<span class=
-"org-keyword">let</span> ((org-blank-before-new-entry '((heading . nil))))
-              (org-insert-heading))
-            (buffer-string))))
-  (should
-   (equal <span class="org-string">"* H\n\n* "</span>
-          (org-test-with-temp-text <span class="org-string">"* H"</span>
-            (end-of-line)
-            (<span class=
-"org-keyword">let</span> ((org-blank-before-new-entry '((heading . t))))
-              (org-insert-heading))
-            (buffer-string))))
-  (should
-   (equal <span class="org-string">"* H\n* "</span>
-          (org-test-with-temp-text <span class="org-string">"* H"</span>
-            (end-of-line)
-            (<span class=
-"org-keyword">let</span> ((org-blank-before-new-entry '((heading . auto))))
-              (org-insert-heading))
-            (buffer-string))))
-  <span class="org-comment-delimiter">;; </span><span class=
-"org-comment">Etc.</span>
-  )
+<pre class="src src-emacs-lisp">(org-test-with-temp-text <span class="org-string">"Initial text"</span>
+  ...)
 </pre>
-          </div>
-        </div>
-      </div>
+</div>
 
-      <div id="outline-container-sec-5-3" class="outline-3">
-        <h3 id="sec-5-3"><span class="section-number-3">5.3</span> Check for
-        compile error</h3>
+<p>
+It is then possible that the test simply compares the whole <code>buffer-string</code>
+with some expected contents.
+</p>
 
-        <div class="outline-text-3" id="text-5-3">
-          <div class="org-src-container">
-            <pre class="src src-emacs-lisp">
-  (set-buffer (get-buffer-create <span class="org-string">"*lilypond*"</span>))
-  (erase-buffer)
-  (insert-file-contents <span class="org-string">"babel.sh"</span>)
-  (goto-char (point-min))
-  (search-forward <span class="org-string">"error:"</span>)
+<div class="note">
+<p>
+<code>(kill-buffer)</code> within <code>(with-temp-buffer ...)</code> does not make sense.
+</p>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline35" class="outline-2">
+<h2 id="orgheadline35"><span class="section-number-2">5</span> Extending Org tests</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+These are several examples which you can use as patterns to add tests to Org.
+</p>
+</div>
+
+<div id="outline-container-orgheadline26" class="outline-3">
+<h3 id="orgheadline26"><span class="section-number-3">5.1</span> Important functions</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+Functions to look at.
+</p>
+</div>
+
+<div id="outline-container-orgheadline22" class="outline-4">
+<h4 id="orgheadline22"><span class="section-number-4">5.1.1</span> Ob.el</h4>
+<div class="outline-text-4" id="text-5-1-1">
+<p>
+<code>org-babel-execute-src-block</code> <br  />
+<code>org-babel-execute:&lt;language&gt;</code> <br  />
+<code>org-babel-expand-body:generic</code> <br  />
+<code>org-babel-get-header</code> <br  />
+<code>org-babel-get-inline-src-block-matches</code> <br  />
+<code>org-babel-get-src-block-info</code> <br  />
+<code>org-babel-next-src-block</code>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline23" class="outline-4">
+<h4 id="orgheadline23"><span class="section-number-4">5.1.2</span> Org-test.el</h4>
+<div class="outline-text-4" id="text-5-1-2">
+<p>
+<code>org-test-at-id</code> <br  />
+<code>org-test-in-example-file</code> <br  />
+<code>org-test-with-temp-text</code>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline24" class="outline-4">
+<h4 id="orgheadline24"><span class="section-number-4">5.1.3</span> Subr.el</h4>
+<div class="outline-text-4" id="text-5-1-3">
+<p>
+<code>dotimes</code> <br  />
+<code>match-string</code>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline25" class="outline-4">
+<h4 id="orgheadline25"><span class="section-number-4">5.1.4</span> C source code</h4>
+<div class="outline-text-4" id="text-5-1-4">
+<p>
+<code>mapcar</code>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline27" class="outline-3">
+<h3 id="orgheadline27"><span class="section-number-3">5.2</span> Insert a new heading</h3>
+<div class="outline-text-3" id="text-5-2">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(<span class="org-keyword">ert-deftest</span> test-org/insert-heading ()
+  <span class="org-doc">"Test specifications for heading insertion."</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">At the end of a single headline: Create headline below, following</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">`</span><span class="org-constant"><span class="org-comment">org-blank-before-new-entry</span></span><span class="org-comment">' specifications.  When it is `</span><span class="org-constant"><span class="org-comment">auto</span></span><span class="org-comment">',</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">since there's not enough information to deduce what is expected,</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">create it just below.</span>
+  (should
+   (equal <span class="org-string">"* H\n* "</span>
+          (org-test-with-temp-text <span class="org-string">"* H"</span>
+            (end-of-line)
+            (<span class="org-keyword">let</span> ((org-blank-before-new-entry '((heading . nil))))
+              (org-insert-heading))
+            (buffer-string))))
+  (should
+   (equal <span class="org-string">"* H\n\n* "</span>
+          (org-test-with-temp-text <span class="org-string">"* H"</span>
+            (end-of-line)
+            (<span class="org-keyword">let</span> ((org-blank-before-new-entry '((heading . t))))
+              (org-insert-heading))
+            (buffer-string))))
+  (should
+   (equal <span class="org-string">"* H\n* "</span>
+          (org-test-with-temp-text <span class="org-string">"* H"</span>
+            (end-of-line)
+            (<span class="org-keyword">let</span> ((org-blank-before-new-entry '((heading . auto))))
+              (org-insert-heading))
+            (buffer-string))))
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">Etc.</span>
+  )
 </pre>
-          </div>
-        </div>
-      </div>
+</div>
+</div>
+</div>
 
-      <div id="outline-container-sec-5-4" class="outline-3">
-        <h3 id="sec-5-4"><span class="section-number-3">5.4</span> Export</h3>
+<div id="outline-container-orgheadline28" class="outline-3">
+<h3 id="orgheadline28"><span class="section-number-3">5.3</span> Check for compile error</h3>
+<div class="outline-text-3" id="text-5-3">
+<div class="org-src-container">
 
-        <div class="outline-text-3" id="text-5-4">
-          <div class="org-src-container">
-            <pre class="src src-emacs-lisp">
-    (<span class=
-"org-keyword">let</span> ((html (org-export-as-html nil nil nil 'string 'body-only)))
-      <span class="org-comment-delimiter">;; </span><span class=
-"org-comment">check the location of each exported number</span>
-      (<span class="org-keyword">with-temp-buffer</span>
-<span class="org-whitespace-indentation">        </span>(insert html)
-        (goto-char (point-min))
-<span class="org-whitespace-indentation">        </span><span class=
-"org-comment-delimiter">;; </span><span class=
-"org-comment">0 should be on a line by itself</span>
-<span class=
-"org-whitespace-indentation">        </span>(should (re-search-forward <span class="org-string">"0"</span> nil t))
+<pre class="src src-emacs-lisp">  (set-buffer (get-buffer-create <span class="org-string">"*lilypond*"</span>))
+  (erase-buffer)
+  (insert-file-contents <span class="org-string">"babel.sh"</span>)
+  (goto-char (point-min))
+  (search-forward <span class="org-string">"error:"</span>)
 </pre>
-          </div>
-        </div>
-      </div>
+</div>
+</div>
+</div>
 
-      <div id="outline-container-sec-5-5" class="outline-3">
-        <h3 id="sec-5-5"><span class="section-number-3">5.5</span> Insert text
-        for testing visual line mode</h3>
+<div id="outline-container-orgheadline29" class="outline-3">
+<h3 id="orgheadline29"><span class="section-number-3">5.4</span> Export</h3>
+<div class="outline-text-3" id="text-5-4">
+<div class="org-src-container">
 
-        <div class="outline-text-3" id="text-5-5">
-          <div class="org-src-container">
-            <pre class="src src-emacs-lisp">
-  <span class="org-comment-delimiter">;; </span><span class=
-"org-comment">Standard test with `</span><span class=
-"org-constant"><span class="org-comment">visual-line-mode</span></span><span class="org-comment">'.</span>
-  (should
-   (org-test-with-temp-text
-       <span class="org-string">"A long line of text\nSome other text"</span>
-     (<span class=
-"org-keyword">progn</span> (forward-char 2) (cl-dotimes (i 1000) (insert <span class="org-string">"very "</span>))
-<span class=
-"org-whitespace-indentation">        </span>    (visual-line-mode 1) (goto-char (point-min)) (org-end-of-line)
-<span class=
-"org-whitespace-indentation">        </span>    (thing-at-point-looking-at <span class="org-string">"very"</span>))))
+<pre class="src src-emacs-lisp">    (<span class="org-keyword">let</span> ((html (org-export-as-html nil nil nil 'string 'body-only)))
+      <span class="org-comment-delimiter">;; </span><span class="org-comment">check the location of each exported number</span>
+      (<span class="org-keyword">with-temp-buffer</span>
+<span class="org-whitespace-indentation">        </span>(insert html)
+        (goto-char (point-min))
+<span class="org-whitespace-indentation">        </span><span class="org-comment-delimiter">;; </span><span class="org-comment">0 should be on a line by itself</span>
+<span class="org-whitespace-indentation">        </span>(should (re-search-forward <span class="org-string">"0"</span> nil t))
 </pre>
-          </div>
-        </div>
-      </div>
+</div>
+</div>
+</div>
 
-      <div id="outline-container-sec-5-6" class="outline-3">
-        <h3 id="sec-5-6"><span class="section-number-3">5.6</span> Proper error
-        message</h3>
+<div id="outline-container-orgheadline30" class="outline-3">
+<h3 id="orgheadline30"><span class="section-number-3">5.5</span> Insert text for testing visual line mode</h3>
+<div class="outline-text-3" id="text-5-5">
+<div class="org-src-container">
 
-        <div class="outline-text-3" id="text-5-6">
-          <p>The following test asserts that, when there is a variable without
-          default value, a proper error message is given; at the beginning, the
-          error was much less understandable:</p>
-          <pre class="example">
+<pre class="src src-emacs-lisp">  <span class="org-comment-delimiter">;; </span><span class="org-comment">Standard test with `</span><span class="org-constant"><span class="org-comment">visual-line-mode</span></span><span class="org-comment">'.</span>
+  (should
+   (org-test-with-temp-text
+       <span class="org-string">"A long line of text\nSome other text"</span>
+     (<span class="org-keyword">progn</span> (forward-char 2) (<span class="org-keyword">cl-dotimes</span> (i 1000) (insert <span class="org-string">"very "</span>))
+<span class="org-whitespace-indentation">        </span>    (visual-line-mode 1) (goto-char (point-min)) (org-end-of-line)
+<span class="org-whitespace-indentation">        </span>    (thing-at-point-looking-at <span class="org-string">"very"</span>))))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline31" class="outline-3">
+<h3 id="orgheadline31"><span class="section-number-3">5.6</span> Proper error message</h3>
+<div class="outline-text-3" id="text-5-6">
+<p>
+The following test asserts that, when there is a variable without default
+value, a proper error message is given; at the beginning, the error was much
+less understandable:
+</p>
+
+<pre class="example">
 Wrong type argument: consp, nil
 </pre>
 
-          <div class="org-src-container">
-            <pre class="src src-emacs-lisp">
-(ert-deftest test-org-babel/no-defaut-value-for-var ()
-  <span class=
-"org-string">"Test that the absence of a default value for a variable DOES THROW</span>
-<span class="org-string">  a proper error."</span>
-  (org-test-at-id <span class=
-"org-string">"f2df5ba6-75fa-4e6b-8441-65ed84963627"</span>
-    (org-babel-next-src-block)
-    (<span class="org-keyword">let</span> ((err
-<span class=
-"org-whitespace-indentation">        </span>   (should-error (org-babel-execute-src-block) <span class="org-builtin">:type</span> 'error)))
-      (should
-       (equal
-        '(<span class="org-warning">error</span> <span class=
-"org-string">"variable \"x\" in block \"carre\" must be assigned a default value"</span>)
-        err)))))
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(<span class="org-keyword">ert-deftest</span> test-org-babel/no-defaut-value-for-var ()
+  <span class="org-doc">"Test that the absence of a default value for a variable DOES THROW</span>
+<span class="org-doc">  a proper error."</span>
+  (org-test-at-id <span class="org-string">"f2df5ba6-75fa-4e6b-8441-65ed84963627"</span>
+    (org-babel-next-src-block)
+    (<span class="org-keyword">let</span> ((err
+<span class="org-whitespace-indentation">        </span>   (should-error (org-babel-execute-src-block) <span class="org-builtin">:type</span> 'error)))
+      (should
+       (equal
+        '(<span class="org-warning">error</span> <span class="org-string">"variable \"x\" in block \"carre\" must be assigned a default value"</span>)
+        err)))))
 </pre>
-          </div>
-        </div>
-      </div>
+</div>
+</div>
+</div>
 
-      <div id="outline-container-sec-5-7" class="outline-3">
-        <h3 id="sec-5-7"><span class="section-number-3">5.7</span> Speed
-        commands</h3>
+<div id="outline-container-orgheadline32" class="outline-3">
+<h3 id="orgheadline32"><span class="section-number-3">5.7</span> Speed commands</h3>
+<div class="outline-text-3" id="text-5-7">
+<p>
+It looks like these <code>self-insert-command</code> functions are special cases. They
+don&rsquo;t look to their arguments to see what key-press invoked them, but rather
+they call the <code>this-command-keys</code> function for this purpose. We can force the
+behavior we want by overriding the definition of this function locally, taking
+this approach the following test case worked for me.
+</p>
 
-        <div class="outline-text-3" id="text-5-7">
-          <p>It looks like these <code>self-insert-command</code> functions are
-          special cases. They don’t look to their arguments to see what
-          key-press invoked them, but rather they call the
-          <code>this-command-keys</code> function for this purpose. We can
-          force the behavior we want by overriding the definition of this
-          function locally, taking this approach the following test case worked
-          for me.</p>
+<div class="org-src-container">
 
-          <div class="org-src-container">
-            <pre class="src src-emacs-lisp">
-(ert-deftest ob-tangle/speed-command-r ()
-  <span class=
-"org-string">"Test that speed command `r' does demote the headline."</span>
-  (org-test-with-temp-text <span class="org-string">"* Speed command"</span>
-    (flet ((this-command-keys () <span class=
-"org-string">"r"</span>)) (org-self-insert-command ?r))
-    (goto-char (point-min))
-    (should (looking-at <span class=
-"org-string">"\\*\\* Speed command"</span>))))
+<pre class="src src-emacs-lisp">(<span class="org-keyword">ert-deftest</span> ob-tangle/speed-command-r ()
+  <span class="org-doc">"Test that speed command `r' does demote the headline."</span>
+  (org-test-with-temp-text <span class="org-string">"* Speed command"</span>
+    (<span class="org-keyword">flet</span> ((this-command-keys () <span class="org-string">"r"</span>)) (org-self-insert-command ?r))
+    (goto-char (point-min))
+    (should (looking-at <span class="org-string">"\\*\\* Speed command"</span>))))
 </pre>
-          </div>
+</div>
 
-          <p>XXX To simulate the press of key, maybe use this:</p>
+<p>
+XXX To simulate the press of key, maybe use this:
+</p>
 
-          <div class="org-src-container">
-            <pre class="src src-emacs-lisp">
-      <span class="org-comment-delimiter">;; </span><span class=
-"org-comment">It's more or less a convention that each language mode binds its</span>
-      <span class="org-comment-delimiter">;; </span><span class=
-"org-comment">symbol completion command to `</span><span class=
-"org-constant"><span class="org-comment">M-TAB</span></span><span class=
-"org-comment">' which is a reserved hot key</span>
-      <span class="org-comment-delimiter">;; </span><span class=
-"org-comment">under Windows. Way to solve this: when you hit `</span><span class="org-constant"><span class="org-comment">C-TAB</span></span><span class="org-comment">', the command</span>
-      <span class="org-comment-delimiter">;; </span><span class=
-"org-comment">normally bound to `</span><span class="org-constant"><span class=
-"org-comment">M-TAB</span></span><span class=
-"org-comment">' will be called.</span>
-      (global-set-key
-       (kbd <span class="org-string">"&lt;C-tab&gt;"</span>) '(<span class=
-"org-keyword">lambda</span> ()
-                          (interactive)
-                          (call-interactively (key-binding (kbd <span class=
-"org-string">"M-TAB"</span>)))))
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">      <span class="org-comment-delimiter">;; </span><span class="org-comment">It's more or less a convention that each language mode binds its</span>
+      <span class="org-comment-delimiter">;; </span><span class="org-comment">symbol completion command to `</span><span class="org-constant"><span class="org-comment">M-TAB</span></span><span class="org-comment">' which is a reserved hot key</span>
+      <span class="org-comment-delimiter">;; </span><span class="org-comment">under Windows. Way to solve this: when you hit `</span><span class="org-constant"><span class="org-comment">C-TAB</span></span><span class="org-comment">', the command</span>
+      <span class="org-comment-delimiter">;; </span><span class="org-comment">normally bound to `</span><span class="org-constant"><span class="org-comment">M-TAB</span></span><span class="org-comment">' will be called.</span>
+      (global-set-key
+       (kbd <span class="org-string">"&lt;C-tab&gt;"</span>) '(lambda ()
+                          (<span class="org-keyword">interactive</span>)
+                          (call-interactively (key-binding (kbd <span class="org-string">"M-TAB"</span>)))))
 </pre>
-          </div>
-        </div>
-      </div>
+</div>
+</div>
+</div>
 
-      <div id="outline-container-sec-5-8" class="outline-3">
-        <h3 id="sec-5-8"><span class="section-number-3">5.8</span> Results
-        block</h3>
+<div id="outline-container-orgheadline33" class="outline-3">
+<h3 id="orgheadline33"><span class="section-number-3">5.8</span> Results block</h3>
+<div class="outline-text-3" id="text-5-8">
+<div class="org-src-container">
 
-        <div class="outline-text-3" id="text-5-8">
-          <div class="org-src-container">
-            <pre class="src src-emacs-lisp">
-(ert-deftest test-org-babel/just-one-results-block ()
-  <span class=
-"org-string">"Test that evaluating two times the same code block does not result in a</span>
-<span class="org-string">duplicate results block."</span>
-  (org-test-with-temp-text <span class=
-"org-string">"#+begin_src sh\necho Hello\n#+end_src\n"</span>
-    (org-babel-execute-src-block)
-    (org-babel-execute-src-block) <span class=
-"org-comment-delimiter">;; </span><span class=
-"org-comment">second code block execution</span>
-    <span class="org-comment-delimiter">;; </span><span class=
-"org-comment">where is point (supposed to be)?</span>
-    (goto-char (point-min))
-    (should (search-forward <span class=
-"org-string">"Hello"</span>)) <span class=
-"org-comment-delimiter">;; </span><span class=
-"org-comment">the string inside the source code block</span>
-    (should (search-forward <span class=
-"org-string">"Hello"</span>)) <span class=
-"org-comment-delimiter">;; </span><span class=
-"org-comment">the same string in the (first?) results block</span>
-    (should-error (search-forward <span class="org-string">"Hello"</span>))))
+<pre class="src src-emacs-lisp">(<span class="org-keyword">ert-deftest</span> test-org-babel/just-one-results-block ()
+  <span class="org-doc">"Test that evaluating two times the same code block does not result in a</span>
+<span class="org-doc">duplicate results block."</span>
+  (org-test-with-temp-text <span class="org-string">"#+begin_src sh\necho Hello\n#+end_src\n"</span>
+    (org-babel-execute-src-block)
+    (org-babel-execute-src-block) <span class="org-comment-delimiter">;; </span><span class="org-comment">second code block execution</span>
+    <span class="org-comment-delimiter">;; </span><span class="org-comment">where is point (supposed to be)?</span>
+    (goto-char (point-min))
+    (should (search-forward <span class="org-string">"Hello"</span>)) <span class="org-comment-delimiter">;; </span><span class="org-comment">the string inside the source code block</span>
+    (should (search-forward <span class="org-string">"Hello"</span>)) <span class="org-comment-delimiter">;; </span><span class="org-comment">the same string in the (first?) results block</span>
+    (should-error (search-forward <span class="org-string">"Hello"</span>))))
 </pre>
-          </div>
-        </div>
-      </div>
+</div>
+</div>
+</div>
 
-      <div id="outline-container-sec-5-9" class="outline-3">
-        <h3 id="sec-5-9"><span class="section-number-3">5.9</span> Test Org
-        list</h3>
+<div id="outline-container-orgheadline34" class="outline-3">
+<h3 id="orgheadline34"><span class="section-number-3">5.9</span> Test Org list</h3>
+<div class="outline-text-3" id="text-5-9">
+<div class="org-src-container">
 
-        <div class="outline-text-3" id="text-5-9">
-          <div class="org-src-container">
-            <pre class="src src-emacs-lisp">
-(ert-deftest org-list-item-test ()
-  (<span class="org-keyword">with-temp-buffer</span>
-    (org-mode)
-    (<span class="org-keyword">let</span> ((org-allow-alphabetical t)
-          (fill-column 70))
-      (insert <span class="org-string">"1. some stuff\n"</span>
-              <span class=
-"org-string">"   a) an alphabetic list item with text longer that the current fill column so that it gets wrapped by fill-paragraph"</span>)
-      (fill-paragraph)
-      (should (not (equal (org-in-item-p) 1))))))
+<pre class="src src-emacs-lisp">(<span class="org-keyword">ert-deftest</span> org-list-item-test ()
+  (<span class="org-keyword">with-temp-buffer</span>
+    (org-mode)
+    (<span class="org-keyword">let</span> ((org-allow-alphabetical t)
+          (fill-column 70))
+      (insert <span class="org-string">"1. some stuff\n"</span>
+              <span class="org-string">"   a) an alphabetic list item with text longer that the current fill column so that it gets wrapped by fill-paragraph"</span>)
+      (fill-paragraph)
+      (should (not (equal (org-in-item-p) 1))))))
 </pre>
-          </div>
-        </div>
-      </div>
-    </div>
+</div>
+</div>
+</div>
+</div>
 
-    <div id="outline-container-sec-6" class="outline-2">
-      <h2 id="sec-6"><span class="section-number-2">6</span> Contributing</h2>
+<div id="outline-container-orgheadline39" class="outline-2">
+<h2 id="orgheadline39"><span class="section-number-2">6</span> Contributing</h2>
+<div class="outline-text-2" id="text-6">
+</div><div id="outline-container-orgheadline36" class="outline-3">
+<h3 id="orgheadline36"><span class="section-number-3">6.1</span> Issues</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+Report issues and suggest features and improvements on the <a href="https://github.com/fniessen/refcard-ERT/issues/new">GitHub issue tracker</a>.
+</p>
+</div>
+</div>
 
-      <div class="outline-text-2" id="text-6"></div>
+<div id="outline-container-orgheadline37" class="outline-3">
+<h3 id="orgheadline37"><span class="section-number-3">6.2</span> Patches</h3>
+<div class="outline-text-3" id="text-6-2">
+<p>
+I love contributions!  Patches under any form are always welcome!
+</p>
+</div>
+</div>
 
-      <div id="outline-container-sec-6-1" class="outline-3">
-        <h3 id="sec-6-1"><span class="section-number-3">6.1</span> Issues</h3>
+<div id="outline-container-orgheadline38" class="outline-3">
+<h3 id="orgheadline38"><span class="section-number-3">6.3</span> Donations</h3>
+<div class="outline-text-3" id="text-6-3">
+<p>
+If you like the refcard-ERT project, you can show your appreciation and support
+future development by making a <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=VCVAS6KPDQ4JC&amp;lc=BE&amp;item_number=refcard-ERT&amp;currency_code=EUR&amp;bn=PP-DonationsBF:btn_donate_LG.gif:NonHosted">donation</a> through PayPal.
+</p>
 
-        <div class="outline-text-3" id="text-6-1">
-          <p>Report issues and suggest features and improvements on the
-          <a href="https://github.com/fniessen/refcard-ERT/issues/new">GitHub
-          issue tracker</a>.</p>
-        </div>
-      </div>
+<p>
+Regardless of the donations, refcard-ERT will always be free both as in beer and
+as in speech.
+</p>
+</div>
+</div>
+</div>
 
-      <div id="outline-container-sec-6-2" class="outline-3">
-        <h3 id="sec-6-2"><span class="section-number-3">6.2</span> Patches</h3>
+<div id="outline-container-orgheadline40" class="outline-2">
+<h2 id="orgheadline40"><span class="section-number-2">7</span> License</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+Copyright (C) 2015 Fabrice Niessen.
+</p>
 
-        <div class="outline-text-3" id="text-6-2">
-          <p>I love contributions! Patches under any form are always
-          welcome!</p>
-        </div>
-      </div>
+<p>
+Author: Fabrice Niessen <br  />
+Keywords: ert emacs regression testing
+</p>
 
-      <div id="outline-container-sec-6-3" class="outline-3">
-        <h3 id="sec-6-3"><span class="section-number-3">6.3</span>
-        Donations</h3>
+<p>
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+</p>
 
-        <div class="outline-text-3" id="text-6-3">
-          <p>If you like the refcard-ERT project, you can show your
-          appreciation and support future development by making a <a href=
-          "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=VCVAS6KPDQ4JC&amp;lc=BE&amp;item_number=refcard-ERT&amp;currency_code=EUR&amp;bn=PP-DonationsBF:btn_donate_LG.gif:NonHosted">
-          donation</a> through PayPal.</p>
+<p>
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+</p>
 
-          <p>Regardless of the donations, refcard-ERT will always be free both
-          as in beer and as in speech.</p>
-        </div>
-      </div>
-    </div>
+<p>
+You should have received a copy of the GNU General Public License along with
+this program. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.
+</p>
 
-    <div id="outline-container-sec-7" class="outline-2">
-      <h2 id="sec-7"><span class="section-number-2">7</span> License</h2>
+<a href="http://opensource.org/licenses/GPL-3.0">
+  <img src="http://img.shields.io/:license-gpl-blue.svg" alt=":license-gpl-blue.svg" />
+</a>
 
-      <div class="outline-text-2" id="text-7">
-        <p>Copyright (C) 2015 Fabrice Niessen.</p>
-
-        <p>Author: Fabrice Niessen<br />
-        Keywords: ert emacs regression testing</p>
-
-        <p>This program is free software; you can redistribute it and/or modify
-        it under the terms of the GNU General Public License as published by
-        the Free Software Foundation, either version 3 of the License, or (at
-        your option) any later version.</p>
-
-        <p>This program is distributed in the hope that it will be useful, but
-        WITHOUT ANY WARRANTY; without even the implied warranty of
-        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-        General Public License for more details.</p>
-
-        <p>You should have received a copy of the GNU General Public License
-        along with this program. If not, see <a href=
-        "http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
-
-        <p><a href="http://opensource.org/licenses/GPL-3.0"><object type=
-        "image/svg+xml" data="http://img.shields.io/:license-gpl-blue.svg">
-          Sorry, your browser does not support SVG.
-        </object></a> <a href=
-        "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=VCVAS6KPDQ4JC&amp;lc=BE&amp;item_number=emacs-leuven-theme&amp;currency_code=EUR&amp;bn=PP-DonationsBF:btn_donate_LG.gif:NonHosted">
-        <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif"
-        alt="btn_donate_LG.gif" /></a></p>
-      </div>
-    </div>
-  </div>
-
-  <div id="postamble" class="status">
-    <div id="footer">
-      <div id="copyright">
-        Copyright © Fabrice Niessen
-      </div>
-    </div>
-  </div>
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=VCVAS6KPDQ4JC&lc=BE&item_number=refcard%2dert&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted">
+  <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" alt="btn_donate_LG.gif" />
+</a>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Fabrice Niessen</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
 </body>
 </html>

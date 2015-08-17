@@ -2,17 +2,23 @@
 #+AUTHOR:    Fabrice Niessen
 #+EMAIL:     fni@missioncriticalit.com
 #+DESCRIPTION: ERT reference card
-#+KEYWORDS:  emacs, ert, emacs lisp, regression, testing, test, tests
+#+KEYWORDS:  emacs, ert, emacs lisp, regression, testing, test, tests, org, org-mode
 #+LANGUAGE:  en
-#+OPTIONS:   H:3 num:t toc:t \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t
-#+OPTIONS:   TeX:t LaTeX:t skip:nil d:nil todo:t pri:t tags:not-in-toc
+#+OPTIONS:   H:3 num:t toc:t
 
-#+PROPERTY:  eval no
+#+PROPERTY:  header-args :eval no
 
 #+SETUPFILE: "~/src/org-style/setup/bigblow.setup"
 
-[[http://opensource.org/licenses/GPL-3.0][http://img.shields.io/:license-gpl-blue.svg]]
-[[https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=VCVAS6KPDQ4JC&lc=BE&item_number=emacs%2dleuven%2dtheme&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted][https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif]]
+#+begin_html
+<a href="http://opensource.org/licenses/GPL-3.0">
+  <img src="http://img.shields.io/:license-gpl-blue.svg" alt=":license-gpl-blue.svg" />
+</a>
+
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=VCVAS6KPDQ4JC&lc=BE&item_number=refcard%2dert&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted">
+  <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" alt="btn_donate_LG.gif" />
+</a>
+#+end_html
 
 * Documentation
 
@@ -26,15 +32,22 @@
 
 *** Running tests interactively
 
+~ert-run-tests-interactively~ runs tests and offers an interactive interface for
+inspecting results and debugging.
+
 - ~M-x ert RET t RET~ ::
      Runs *all* the *tests* currently defined and display the results in a buffer.
 
 *** Running tests in batch mode
 
-To run the tests in batch mode, type (for example, for YASnippets):
+There is also ~ert-run-tests-batch-and-exit~ for non-interactive use.
+
+To run the tests in batch mode, type:
 
 #+begin_src shell
-emacs -Q -L . -l yasnippet-tests.el -nw --batch -e yas-batch-run-tests
+# Run all defined tests (no selection).
+emacs --batch -l my-tests.el -f ert-run-tests-batch-and-exit
+emacs -Q --batch -L . -l yasnippet-tests.el -nw -e yas-batch-run-tests
 #+end_src
 
 ** Org tests
@@ -46,10 +59,11 @@ emacs -Q -L . -l yasnippet-tests.el -nw --batch -e yas-batch-run-tests
 #+end_src
 
 # - ~M-x org-test-load~ ::
-#      Loads up the Org mode test suite (all ~.el~ files in ~testing/lisp~).
+#      Load up the Org mode test suite (all ~.el~ files in ~testing/lisp~) AND RUN
+#      THE TESTS?
 
 - ~M-x org-test-run-all-tests~ ::
-     Runs all the tests currently defined matching the string ~(org|ob)~.
+     Runs all the tests currently defined matching the string ~\(org\|ob\)~.
 
      #+begin_note
      Unlike ~org-test-run-all-tests~, ~ert~ does not "touch" the examples, what
@@ -63,6 +77,31 @@ To run *each test individually*, press ~C-x C-e~ at the end of the ~should~ sexp
 
 To run the test suite (*all existing test cases*), type ~make test~ from the
 =org-mode/= directory.
+
+#+begin_src shell
+# Using emacs in batch mode (with no user and site configuration).
+emacs -Q --batch \
+      --eval '(setq vc-handled-backends nil org-startup-folded nil)' \
+      --eval '(add-to-list '"'"'load-path (concat default-directory "lisp"))' \
+      --eval '(add-to-list '"'"'load-path (concat default-directory "testing"))' \
+      -l org-batch-test-init \
+      --eval '(setq \
+                    org-batch-test t \
+                    org-babel-load-languages \
+                    org-test-select-re "\\(org\\|ob\\)" \
+              )' \
+      -l org-loaddefs.el \
+      -l cl -l testing/org-test.el \
+      -l ert -l org -l ox \
+      --eval '(org-test-run-batch-tests org-test-select-re)'
+
+# Run all defined tests (no selection).
+emacs -Q --batch \
+      -L lisp/ -L testing/ \
+      -l ~/src/emacs-leuven/org-test-fni.el \
+      --eval '(setq org-confirm-babel-evaluate nil)' \
+      -f ert-run-tests-batch-and-exit
+#+end_src
 
 ** Key bindings
 
@@ -256,28 +295,28 @@ Functions to look at.
 
 *** Ob.el
 
-org-babel-execute-src-block \\
-org-babel-execute:<language> \\
-org-babel-expand-body:generic \\
-org-babel-get-header \\
-org-babel-get-inline-src-block-matches \\
-org-babel-get-src-block-info \\
-org-babel-next-src-block
+~org-babel-execute-src-block~ \\
+~org-babel-execute:<language>~ \\
+~org-babel-expand-body:generic~ \\
+~org-babel-get-header~ \\
+~org-babel-get-inline-src-block-matches~ \\
+~org-babel-get-src-block-info~ \\
+~org-babel-next-src-block~
 
 *** Org-test.el
 
-org-test-at-id \\
-org-test-in-example-file \\
-org-test-with-temp-text
+~org-test-at-id~ \\
+~org-test-in-example-file~ \\
+~org-test-with-temp-text~
 
 *** Subr.el
 
-dotimes \\
-match-string
+~dotimes~ \\
+~match-string~
 
 *** C source code
 
-mapcar
+~mapcar~
 
 ** Insert a new heading
 
@@ -466,5 +505,12 @@ A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with
 this program. If not, see http://www.gnu.org/licenses/.
 
-[[http://opensource.org/licenses/GPL-3.0][http://img.shields.io/:license-gpl-blue.svg]]
-[[https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=VCVAS6KPDQ4JC&lc=BE&item_number=emacs%2dleuven%2dtheme&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted][https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif]]
+#+begin_html
+<a href="http://opensource.org/licenses/GPL-3.0">
+  <img src="http://img.shields.io/:license-gpl-blue.svg" alt=":license-gpl-blue.svg" />
+</a>
+
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=VCVAS6KPDQ4JC&lc=BE&item_number=refcard%2dert&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted">
+  <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" alt="btn_donate_LG.gif" />
+</a>
+#+end_html
