@@ -520,7 +520,7 @@ as in speech.
 
 * License
 
-Copyright (C) 2015-2021 Fabrice Niessen.
+Copyright (C) 2015-2025 Fabrice Niessen. All rights reserved.
 
 Author: Fabrice Niessen \\
 Keywords: ert emacs regression testing
